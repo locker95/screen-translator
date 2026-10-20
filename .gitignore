@@ -1,0 +1,10 @@
+build/
+out/
+*.apk
+*.jks
+*.keystore
+keystore*
+*.idsig
+# 私有数据（从第三方 App 提取的原始文本等）不进仓库
+private/
+__pycache__/

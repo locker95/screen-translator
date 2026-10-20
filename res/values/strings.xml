@@ -1,0 +1,1 @@
+<resources><string name="desc">读取当前屏幕上的文字，通过 DeepSeek 翻译成中文并以悬浮层显示。只读，不点击、不注入任何操作。</string></resources>
