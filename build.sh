@@ -17,8 +17,7 @@ die(){ echo "错误: $*" >&2; exit 1; }
 
 # ---- JDK ----
 if [ -z "$JAVA_HOME" ]; then
-  if command -v javac >/dev/null 2>&1; then JAVA_HOME=$(dirname "$(dirname "$(readlink -f "$(command -v javac)")")")
-  else for d in /workspace/tools/jdk-17*; do [ -x "$d/bin/javac" ] && JAVA_HOME=$d; done; fi
+  command -v javac >/dev/null 2>&1 && JAVA_HOME=$(dirname "$(dirname "$(readlink -f "$(command -v javac)")")")
 fi
 [ -n "$JAVA_HOME" ] && [ -x "$JAVA_HOME/bin/javac" ] || die "找不到 JDK（javac）。请安装 JDK 17+ 并设置 JAVA_HOME"
 export JAVA_HOME PATH="$JAVA_HOME/bin:$PATH"
@@ -27,13 +26,11 @@ export JAVA_HOME PATH="$JAVA_HOME/bin:$PATH"
 SDK=${ANDROID_HOME:-$ANDROID_SDK_ROOT}
 if [ -z "$BUILD_TOOLS" ]; then
   [ -n "$SDK" ] && [ -d "$SDK/build-tools" ] && BUILD_TOOLS=$(ls -d "$SDK"/build-tools/*/ 2>/dev/null | sort -V | tail -1)
-  [ -z "$BUILD_TOOLS" ] && [ -d /workspace/tools/android-14 ] && BUILD_TOOLS=/workspace/tools/android-14
 fi
 BUILD_TOOLS=${BUILD_TOOLS%/}
 for t in aapt2 d8 zipalign apksigner; do [ -n "$BUILD_TOOLS" ] && [ -x "$BUILD_TOOLS/$t" ] || die "BUILD_TOOLS 里缺少 $t（当前: ${BUILD_TOOLS:-未设置}）。请设置 ANDROID_HOME 或 BUILD_TOOLS"; done
 if [ -z "$ANDROID_JAR" ]; then
   [ -n "$SDK" ] && ANDROID_JAR=$(ls "$SDK"/platforms/android-*/android.jar 2>/dev/null | sort -V | tail -1)
-  [ -z "$ANDROID_JAR" ] && [ -f /workspace/tools/android-34/android.jar ] && ANDROID_JAR=/workspace/tools/android-34/android.jar
 fi
 [ -n "$ANDROID_JAR" ] && [ -f "$ANDROID_JAR" ] || die "找不到 android.jar（需 API 34+）。请设置 ANDROID_HOME 或 ANDROID_JAR"
 BT=$BUILD_TOOLS; AJ=$ANDROID_JAR

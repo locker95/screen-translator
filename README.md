@@ -12,8 +12,16 @@
 
 ---
 
+## 快速开始
+
+1. 到 [Releases](https://github.com/locker95/screen-translator/releases) 下载最新 APK，装到手机上。
+2. 打开「屏幕译」，填入自己的 [DeepSeek API Key](https://platform.deepseek.com/)，点「保存 Key」。
+3. 点「打开无障碍设置」，开启「屏幕译 翻译服务」（Android 13+ 可能要先“允许受限设置”，见[下载安装](#下载安装)）。
+4. 打开「中文翻译 开/关」，切到要翻译的 App 即可。
+
 ## 目录
 
+- [快速开始](#快速开始)
 - [简介](#简介)
 - [功能](#功能)
 - [下载安装](#下载安装)
@@ -32,13 +40,9 @@
 
 ## 简介
 
-最直接的做法是把目标 App 解包、把字符串换成中文、再重新打包。对 Milli Eats 来说这条路走不通：
+想让一个只有俄语界面的 App 显示中文，常见做法是解包、替换字符串、重新打包。但很多 App 的文字直接写在代码里（例如 Jetpack Compose），或者带有完整性校验、以多个分包分发，改包既麻烦也不稳定，还会动到别人的 App。
 
-1. **PairIP 防护**：App 自带完整性校验，重新签名后的 APK 无法正常运行。
-2. **字符串写死在 Jetpack Compose 代码里**：界面上的约 350 条俄语文字不在 `strings.xml` 里，而是直接编译进了代码，只替换资源文件没有用。
-3. **Split APK**：应用以多个分包（base + config splits）分发，单独改 base.apk 再装回去很麻烦。
-
-所以屏幕译换了个思路：**完全不碰目标 App**，只"看"屏幕、"盖"一层中文：
+屏幕译**完全不修改目标 App**，所以对带完整性校验的应用同样适用。它只“看”屏幕、“盖”一层中文：
 
 - 无障碍服务读取界面上每段文字的内容和屏幕坐标；
 - 先查内置词典 / 本地缓存，查不到再批量请求 DeepSeek；
@@ -219,10 +223,10 @@
 
 | 变量 | 作用 | 默认值 |
 |---|---|---|
-| `JAVA_HOME` | JDK 路径 | `PATH` 里的 `javac`；都没有时用 `/workspace/tools/jdk-17*`（如果存在） |
+| `JAVA_HOME` | JDK 路径 | `PATH` 里的 `javac` |
 | `ANDROID_HOME` / `ANDROID_SDK_ROOT` | SDK 根目录 | — |
-| `BUILD_TOOLS` | build-tools 目录 | `$ANDROID_HOME/build-tools/` 下最新版；否则用 `/workspace/tools/android-14`（如果存在） |
-| `ANDROID_JAR` | `android.jar` | `$ANDROID_HOME/platforms/android-*/android.jar` 中最新的；否则用 `/workspace/tools/android-34/android.jar`（如果存在） |
+| `BUILD_TOOLS` | build-tools 目录 | `$ANDROID_HOME/build-tools/` 下最新版 |
+| `ANDROID_JAR` | `android.jar` | `$ANDROID_HOME/platforms/android-*/android.jar` 中最新的 |
 | `KEYSTORE` | 签名证书 | `./keystore.jks`，不存在时自动生成 |
 | `KEYSTORE_PASS` | 证书库密码 | 用自己的证书时**必填**；自动生成的 `./keystore.jks` 为 `localdebug` |
 | `KEY_ALIAS` | 证书别名 | `key` |
